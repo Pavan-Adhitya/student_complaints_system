@@ -16,22 +16,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the data from the form
     $complaint_id = intval($_POST['complaint_id']);
     $new_status = htmlspecialchars($_POST['new_status']);
+    $admin_note = htmlspecialchars($_POST['admin_note'] ?? '');
     
-    // --- Step 1: Find the student's email associated with this complaint ---
+    // --- Step 1: Find the student's email and ID associated with this complaint ---
     // We do this BEFORE updating, in case the update fails.
-    $stmt = $conn->prepare("SELECT s.email FROM students s JOIN complaints c ON s.id = c.student_id WHERE c.id = ?");
+    $stmt = $conn->prepare("SELECT s.id as student_id, s.email FROM students s JOIN complaints c ON s.id = c.student_id WHERE c.id = ?");
     $stmt->bind_param("i", $complaint_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $student = $result->fetch_assoc();
     $student_email = $student['email']; // The recipient's email address
+    $student_id = $student['student_id'];
 
-    // --- Step 2: Update the status in the database ---
-    $stmt = $conn->prepare("UPDATE complaints SET status = ? WHERE id = ?");
-    $stmt->bind_param("si", $new_status, $complaint_id);
+    // --- Step 2: Update the status and admin note in the database ---
+    $stmt = $conn->prepare("UPDATE complaints SET status = ?, admin_note = ? WHERE id = ?");
+    $stmt->bind_param("ssi", $new_status, $admin_note, $complaint_id);
     
     // Check if the database update was successful AND we found an email address
     if ($stmt->execute() && $student_email) {
+        
+        // --- Step 2.5: Create In-App Notification ---
+        if ($student_id) {
+            $msg = "Your complaint (#$complaint_id) status changed to $new_status.";
+            $notif_stmt = $conn->prepare("INSERT INTO notifications (student_id, complaint_id, message) VALUES (?, ?, ?)");
+            $notif_stmt->bind_param("iis", $student_id, $complaint_id, $msg);
+            $notif_stmt->execute();
+        }
         
         // --- Step 3: Try to send the email notification ---
         $mail = new PHPMailer(true);
@@ -56,8 +66,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // --- EMAIL CONTENT ---
             $mail->isHTML(true);
             $mail->Subject = 'Update on your complaint #' . $complaint_id;
-            $mail->Body    = "Hello,<br><br>The status of your complaint (ID: <b>$complaint_id</b>) has been updated to: <b>$new_status</b>.<br><br>Thank you,<br>College Administration";
-            $mail->AltBody = "Hello, The status of your complaint (ID: $complaint_id) has been updated to: $new_status. Thank you, College Administration";
+            
+            $email_body = "Hello,<br><br>The status of your complaint (ID: <b>$complaint_id</b>) has been updated to: <b>$new_status</b>.<br><br>";
+            if (!empty($admin_note)) {
+                $email_body .= "<b>Admin Note:</b> $admin_note<br><br>";
+            }
+            $email_body .= "Thank you,<br>College Administration";
+            
+            $mail->Body    = $email_body;
+            $mail->AltBody = "Hello, The status of your complaint (ID: $complaint_id) has been updated to: $new_status. Admin Note: $admin_note. Thank you, College Administration";
             
             $mail->send();
             

@@ -3,67 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Complaint Form</title>
+    <title>College Portal</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Include Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>College Complaint & Feedback Form</h1>
-        <p>Please fill out the form below to submit your complaint or feedback.</p>
+<body class="landing-body">
+    <div class="landing-container">
+        <div class="landing-header">
+            <span class="material-icons logo-icon">school</span>
+            <h1>University Portal</h1>
+            <p>Welcome to the campus complaint and feedback system. Please select your role to continue.</p>
+        </div>
         
-        <form action="submit_complaint.php" method="POST">
-            <label for="student_name">Full Name</label>
-            <input type="text" id="student_name" name="student_name" required>
+        <div class="role-selection">
+            <a href="login.php" class="role-card student-card">
+                <span class="material-icons role-icon">face</span>
+                <h2>I am a Student</h2>
+                <p>Submit complaints, track status, and view history.</p>
+                <div class="role-action">Login as Student <span class="material-icons">arrow_forward</span></div>
+            </a>
             
-            <label for="student_email">Email Address</label>
-            <input type="email" id="student_email" name="student_email" required>
-            
-            <label for="category">Category</label>
-            <select id="category" name="category" required>
-                <option value="">--Select a Category--</option>
-                <option value="Academic">Academic</option>
-                <option value="Infrastructure">Infrastructure</option>
-                <option value="Faculty">Faculty</option>
-                <option value="Hostel & Accommodation">Hostel & Accommodation</option>
-                <option value="Food & Mess">Food & Mess</option>
-                <option value="Financial & Fees">Financial & Fees</option>
-                <option value="Administration">Administration</option>
-                <option value="Library & Resources">Library & Resources</option>
-                <option value="Campus Security">Campus Security</option>
-                <option value="Health & Wellness">Health & Wellness</option>
-                <option value="Other">Other</option>
-            </select>
-
-            <div id="other_category_group" style="display: none; margin-top: -10px; margin-bottom: 20px;">
-                <label for="other_category">Please specify your category</label>
-                <input type="text" id="other_category" name="other_category" placeholder="Enter specific category" style="margin-bottom: 0;">
-            </div>
-            
-            <label for="subject">Subject</label>
-            <input type="text" id="subject" name="subject" required>
-
-            <label for="description">Detailed Description</label>
-            <textarea id="description" name="description" rows="6" required></textarea>
-            
-            <button type="submit">Submit Complaint</button>
-        </form>
+            <a href="admin_login.php" class="role-card admin-card">
+                <span class="material-icons role-icon">admin_panel_settings</span>
+                <h2>I am an Administrator</h2>
+                <p>Manage, review, and resolve student complaints.</p>
+                <div class="role-action">Login as Admin <span class="material-icons">arrow_forward</span></div>
+            </a>
+        </div>
     </div>
-
-    <script>
-        const categorySelect = document.getElementById('category');
-        const otherCategoryGroup = document.getElementById('other_category_group');
-        const otherCategoryInput = document.getElementById('other_category');
-
-        categorySelect.addEventListener('change', function() {
-            if (this.value === 'Other') {
-                otherCategoryGroup.style.display = 'block';
-                otherCategoryInput.required = true;
-            } else {
-                otherCategoryGroup.style.display = 'none';
-                otherCategoryInput.required = false;
-                otherCategoryInput.value = '';
-            }
-        });
-    </script>
 </body>
 </html>

@@ -23,7 +23,7 @@ if (!isset($_SESSION['student_id'])) {
         <p>Please fill out the form below to submit your complaint.</p>
         
         <!-- This form submits to our modified PHP file -->
-        <form action="submit_complaint.php" method="POST">
+        <form action="submit_complaint.php" method="POST" enctype="multipart/form-data">
             <label for="category">Category</label>
             <select id="category" name="category" required>
                 <option value="">--Select a Category--</option>
@@ -50,6 +50,14 @@ if (!isset($_SESSION['student_id'])) {
 
             <label for="description">Detailed Description</label>
             <textarea id="description" name="description" rows="6" required></textarea>
+            
+            <label for="attachment">Upload Proof (Optional, max 2MB)</label>
+            <input type="file" id="attachment" name="attachment" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" style="background: #fff; padding: 10px; border: 2px dashed var(--border-color); cursor: pointer;">
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; background: #FAFCFF; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <input type="checkbox" id="is_anonymous" name="is_anonymous" value="1" style="width: 20px; height: 20px; margin-bottom: 0; cursor: pointer;">
+                <label for="is_anonymous" style="margin-bottom: 0; cursor: pointer; font-size: 15px;">Submit Anonymously (Hide my identity from Administration)</label>
+            </div>
             
             <button type="submit">Submit Complaint</button>
         </form>
