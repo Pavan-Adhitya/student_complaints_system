@@ -81,6 +81,7 @@ $result = $conn->query($sql);
                     <th>Student Name</th>
                     <th>Category</th>
                     <th>Subject</th>
+                    <th>Description</th>
                     <th>Status</th>
                     <th>Submitted At</th>
                     <th>Action</th>
@@ -96,6 +97,7 @@ $result = $conn->query($sql);
                         echo "<td>" . htmlspecialchars($row["student_name"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["category"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["subject"]) . "</td>";
+                        echo "<td class='description-cell' title='" . htmlspecialchars($row["description"]) . "'>" . htmlspecialchars($row["description"]) . "</td>";
                         echo "<td><strong>" . htmlspecialchars($row["status"]) . "</strong></td>";
                         echo "<td>" . $row["created_at"] . "</td>";
                         echo '<td>
@@ -113,7 +115,7 @@ $result = $conn->query($sql);
                     }
                 } else {
                     // Display a message if no complaints are found for the current filter
-                    echo "<tr><td colspan='7'>No complaints found for this filter.</td></tr>";
+                    echo "<tr><td colspan='8'>No complaints found for this filter.</td></tr>";
                 }
                 $conn->close();
                 ?>

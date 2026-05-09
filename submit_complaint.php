@@ -17,6 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 2. Get the rest of the data from the form
     $category = htmlspecialchars($_POST['category']);
+    if ($category === 'Other' && !empty($_POST['other_category'])) {
+        $category = htmlspecialchars($_POST['other_category']);
+    }
     $subject = htmlspecialchars($_POST['subject']);
     $description = htmlspecialchars($_POST['description']);
     

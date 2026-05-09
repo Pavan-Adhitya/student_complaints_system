@@ -27,13 +27,14 @@ $student_id = $_SESSION['student_id'];
                     <th>ID</th>
                     <th>Category</th>
                     <th>Subject</th>
+                    <th>Description</th>
                     <th>Status</th>
                     <th>Submitted At</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                $stmt = $conn->prepare("SELECT id, category, subject, status, created_at FROM complaints WHERE student_id = ? ORDER BY created_at DESC");
+                $stmt = $conn->prepare("SELECT id, category, subject, description, status, created_at FROM complaints WHERE student_id = ? ORDER BY created_at DESC");
                 $stmt->bind_param("i", $student_id);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -44,12 +45,13 @@ $student_id = $_SESSION['student_id'];
                         echo "<td>" . $row["id"] . "</td>";
                         echo "<td>" . htmlspecialchars($row["category"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["subject"]) . "</td>";
+                        echo "<td class='description-cell' title='" . htmlspecialchars($row["description"]) . "'>" . htmlspecialchars($row["description"]) . "</td>";
                         echo "<td><strong>" . htmlspecialchars($row["status"]) . "</strong></td>";
                         echo "<td>" . $row["created_at"] . "</td>";
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='5'>You have not submitted any complaints yet.</td></tr>";
+                    echo "<tr><td colspan='6'>You have not submitted any complaints yet.</td></tr>";
                 }
                 $stmt->close();
                 $conn->close();

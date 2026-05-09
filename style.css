@@ -214,6 +214,14 @@ th, td {
     text-align: left;
 }
 
+.description-cell {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: help;
+}
+
 th {
     background-color: #f8f9fa;
     font-weight: 600;
